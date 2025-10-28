@@ -42,7 +42,7 @@ matchlog_button.write("Match log",font=main_menu_font,align="center")
 
 #play button
 play_button = trtl.Turtle()
-play_button.hideturtle()
+play_button.color("black")
 play_button.speed("fastest")
 play_button.shape("square")
 play_button.shapesize(5)
@@ -50,17 +50,22 @@ play_button.penup()
 
 play_button.goto(0,25)
 play_button.write("Play", font=main_menu_font, align="center")
+play_button.color("white")
 
-play_button.showturtle()
+player_name1 = 1
+player_name2 = 2
 
-test_turtle = trtl.Turtle()
-test_turtle.shape("square")
+def play_click(x,y):
+    global player_name1
+    global player_name2
+    wn.clear()
+    print(x, y)
+    player_name1 = trtl.textinput("Player 1", "Your name is...")
+    player_name2 = trtl.textinput("Player 2", "Your name is...")
 
-def click_play():
-    test_turtle.hideturtle()
-    wn.clearscreen()
+play_button.onclick(play_click)
 
-test_turtle.onclick(click_play)
+print(player_name1, player_name2)
 
 #player names
 
