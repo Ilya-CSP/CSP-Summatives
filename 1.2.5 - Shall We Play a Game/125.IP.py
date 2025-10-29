@@ -42,6 +42,7 @@ matchlog_button.write("Match log",font=main_menu_font,align="center")
 
 #play button
 play_button = trtl.Turtle()
+play_button.hideturtle()
 play_button.color("black")
 play_button.speed("fastest")
 play_button.shape("square")
@@ -52,26 +53,52 @@ play_button.goto(0,25)
 play_button.write("Play", font=main_menu_font, align="center")
 play_button.color("white")
 
-player_name1 = 1
-player_name2 = 2
+main_menu = True #defines if it is a main menu on the screen
+
+play_button_x_min = -40
+play_button_x_max = 40
+play_button_y_min = 20
+play_button_y_max = 55
+
+#player names variables
+player_name1 = ""
+player_name2 = ""
+
+first_turn_rule = "n"
 
 def play_click(x,y):
-    global player_name1
-    global player_name2
-    wn.clear()
-    print(x, y)
-    player_name1 = trtl.textinput("Player 1", "Your name is...")
-    player_name2 = trtl.textinput("Player 2", "Your name is...")
+    if play_button_x_max >= x >= play_button_x_min and play_button_y_max >= y >= play_button_y_min:
+        global main_menu
+        if main_menu == True:
+            wn.clear()
+            global player_name1
+            global player_name2
+            global first_turn_rule
+            player_name1 = trtl.textinput("Player 1", "Your name is...")
+            player_name2 = trtl.textinput("Player 2", "Your name is...")
+            first_turn_rule = trtl.textinput("Each new round, the one who lost goes first(y/n)?")
+            main_menu = False
 
-play_button.onclick(play_click)
+wn.onscreenclick(play_click)
 
-print(player_name1, player_name2)
-
-#player names
-
-#ask rule
 
 #game board
+board_draw = trtl.Turtle()
+board_draw.speed("fastest")
+board_draw.hideturtle()
+line_draw = -150
+
+game = True
+
+def game_board():
+    if game == True:
+        for i in range(2):
+            global line_draw
+            board_draw.penup()
+            board_draw.goto(line_draw,300)
+            board_draw.pendown()
+            board_draw.goto(line_draw,-300)
+game_board()
 
 #player names + scores
 
