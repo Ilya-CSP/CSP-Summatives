@@ -1,4 +1,3 @@
-#setup the turtle and wn
 import turtle as trtl
 wn = trtl.Screen()
 
@@ -25,13 +24,6 @@ play_button.speed("fastest")
 play_button.shape("square")
 play_button.shapesize(5)
 play_button.penup()
-
-matchlog_button = trtl.Turtle()
-matchlog_button.hideturtle()
-matchlog_button.speed("fastest")
-matchlog_button.shape("square")
-matchlog_button.shapesize(5)
-matchlog_button.penup()
 
 board_draw = trtl.Turtle()
 board_draw.speed("fastest")
@@ -86,34 +78,10 @@ for i in range(len(tictactoe_list)):
     main_menu_text.write(tictactoe_list[i], font=font_setup_title, align="center")
     title_distance+=138
 
-#defines which part of the game is currently on the screen
-main_menu = True #defines if it is the main menu on the screen
+# which part of the game is currently on the screen
+main_menu = True # if it is the main menu on the screen
 board_drawing = False #is the gameboard being made
 game_going = False #is the game in progress
-
-#match log button
-
-matchlog_button.goto(0,-75)
-matchlog_button.write("Match log",font=main_menu_font,align="center")
-
-log_button_x_min = -80
-log_button_x_max = 80
-log_button_y_min = -105
-log_button_y_max = -40
-
-match_log = False
-
-def log_click(x,y):
-    if log_button_x_max >= x >= log_button_x_min and log_button_y_max >= y >= log_button_y_min:
-        global main_menu
-        if main_menu == True:
-            wn.clear()
-            global match_log
-            main_menu = False
-            match_log = True
-#pull out the names and scores
-
-#write them in order
 
 #play button
 play_button.goto(0,25)
@@ -136,7 +104,6 @@ def play_click(x,y):
         global main_menu
         if main_menu == True:
             play_button.clear()
-            matchlog_button.clear()
             main_menu_text.clear()
             global player_name1
             global player_name2
@@ -144,16 +111,13 @@ def play_click(x,y):
             global board_drawing
             player_name1 = trtl.textinput("Player 1", "Your name is...")
             player_name2 = trtl.textinput("Player 2", "Your name is...")
-            first_turn_rule = trtl.textinput("Rule","Each new round, the one who lost goes first(y/n)?")
             main_menu = False
             board_drawing = True
-
-#game board
 
 #setup values
 score1 = 0
 score2 = 0
-# simple turn tracker: 0 -> player A, 1 -> player B
+# simple turn tracker: 0 = player A, 1 = player B
 current_turn = 0
 
 
@@ -190,14 +154,16 @@ def game_board():
         player_name2_trtl.goto(370,370)
         player_name2_trtl.write(str(player_name2) + "   " + str(score2), font=game_font, align="right")
         game_going = True
-def hitbox_turtle_click_change(x, y):
+
+def hitbox_turtle_click_change(x,y):
 # pixel half-size for shapesize(10)
     half = (10 * 20) / 2
     global current_turn
     if game_going:
         for i in range(len(squares)):
             t = squares[i]
-            # skip already claimed squares
+            if getattr(t, "claimed", False): # skip already claimed squares (calls upon an attribute)
+                continue
             sx = t.xcor()
             sy = t.ycor()
             if sx - half <= x <= sx + half and sy - half <= y <= sy + half:
@@ -216,14 +182,74 @@ def hitbox_turtle_click_change(x, y):
                     current_turn = 0
                 return i
         return None
+    
+def clear_board():
+    global board_draw, squares, player_name1_trtl, player_name2_trtl, game_going, board_drawing, current_turn
+    # clear drawing of the grid and player name displays
+    try:
+        board_draw.clear()
+    except Exception:
+        pass
+    player_name1_trtl.clear()
+    player_name2_trtl.clear()
+    # reset squares to unclaimed neutral state
+    for t in squares:
+        t.hideturtle()
+        t.shape("square")
+        t.color("white")
+        t.claimed = False
+        t.owner = None
+    game_going = False
+    board_drawing = True
+    # reset turn to player 0 (you can adjust this behavior later using first_turn_rule)
+    current_turn = 0
+    # redraw the fresh board immediately
+    game_board()
 
+def check_three_in_a_row():
+    global score1, score2
+    # gather owners in a simple list
+    owners = []
+    for t in squares:
+        owners.append(t.owner)
 
+    # all possible winning lines (rows, columns, diagonals)
+    winning_lines = [
+        [0,1,2], [3,4,5], [6,7,8],  # rows
+        [0,3,6], [1,4,7], [2,5,8],  # columns
+        [0,4,8], [2,4,6]]            # diagonals
+
+    # check each winning line using basic comparisons
+    for line in winning_lines:
+        a = line[0]
+        b = line[1]
+        c = line[2]
+        if owners[a] is not None and owners[a] == owners[b] and owners[b] == owners[c]:
+            winner = owners[a]
+            if winner == 0:
+                score1 = score1 + 1
+            else:
+                score2 = score2 + 1
+            clear_board()
+            return winner
+
+    # if no winner check for a full board (tie)
+    full = True
+    for o in owners:
+        if o is None:
+            full = False
+            break
+    if full:
+        clear_board()
+
+    return None
+
+#all functions executed from here
 def game_events(x,y):
     # remember whether the board was already being drawn before this click
     was_board_drawing = board_drawing
 
     play_click(x,y)
-    log_click(x,y)
     game_board()
     # check hitboxes only if the board was already active before this click
     if was_board_drawing:
@@ -231,21 +257,10 @@ def game_events(x,y):
         if hit is not None:
             print(f"Hitbox clicked: index {hit}, row {hit//3}, col {hit%3}")
             # after a successful move, check for a winner or full board
+    check_three_in_a_row()
         
-
+#triggers all functions
 wn.onscreenclick(game_events)
 
-#esc button
-
-#check if there's three in a row
-
-#erase the board if true and write score
-
-#change corner scores
-
-#show the winner 
-
-#save the score 
-
-#keep the screen
+#keep the screen going
 wn.mainloop()
