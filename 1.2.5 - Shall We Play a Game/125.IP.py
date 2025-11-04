@@ -11,6 +11,9 @@ font_setup_title = ("Arial", 50, "bold")
 main_menu_font = ("Arial", 32, "bold")
 game_font = ("Arial", 24, "bold")
 
+#gif shape
+wn.addshape("/Users/316886/Desktop/CSP 2025/CSP-Summatives/1.2.5 - Shall We Play a Game/x.gif")
+
 ############################################################### prepare ALL turtles
 main_menu_text = trtl.Turtle()
 main_menu_text.hideturtle()
@@ -97,8 +100,6 @@ play_button_y_max = 55
 player_name1 = ""
 player_name2 = ""
 
-first_turn_rule = "n" #default
-
 def play_click(x,y):
     if play_button_x_max >= x >= play_button_x_min and play_button_y_max >= y >= play_button_y_min:
         global main_menu
@@ -107,7 +108,6 @@ def play_click(x,y):
             main_menu_text.clear()
             global player_name1
             global player_name2
-            global first_turn_rule
             global board_drawing
             player_name1 = trtl.textinput("Player 1", "Your name is...")
             player_name2 = trtl.textinput("Player 2", "Your name is...")
@@ -156,7 +156,7 @@ def game_board():
         game_going = True
 
 def hitbox_turtle_click_change(x,y):
-# pixel half-size for shapesize(10)
+# pixel half size for shapesize(10)
     half = (10 * 20) / 2
     global current_turn
     if game_going:
@@ -169,7 +169,7 @@ def hitbox_turtle_click_change(x,y):
             if sx - half <= x <= sx + half and sy - half <= y <= sy + half:
                 print("Hitbox clicked: index " + str(i) + " row " + str(i // 3) + " col " + str(i % 3))
                 if current_turn == 0:
-                    t.shape("square")
+                    t.shape("/Users/316886/Desktop/CSP 2025/CSP-Summatives/1.2.5 - Shall We Play a Game/x.gif")
                     t.color("red")
                     t.claimed = True
                     t.owner = 0
@@ -185,14 +185,14 @@ def hitbox_turtle_click_change(x,y):
     
 def clear_board():
     global board_draw, squares, player_name1_trtl, player_name2_trtl, game_going, board_drawing, current_turn
-    # clear drawing of the grid and player name displays
+    # clear drawing of the grid and player name
     try:
         board_draw.clear()
     except Exception:
         pass
     player_name1_trtl.clear()
     player_name2_trtl.clear()
-    # reset squares to unclaimed neutral state
+    # reset squares to unclaimed
     for t in squares:
         t.hideturtle()
         t.shape("square")
@@ -201,9 +201,9 @@ def clear_board():
         t.owner = None
     game_going = False
     board_drawing = True
-    # reset turn to player 0 (you can adjust this behavior later using first_turn_rule)
+    # reset turn to player 0
     current_turn = 0
-    # redraw the fresh board immediately
+    # redraw the board immediately
     game_board()
 
 def check_three_in_a_row():
@@ -213,13 +213,13 @@ def check_three_in_a_row():
     for t in squares:
         owners.append(t.owner)
 
-    # all possible winning lines (rows, columns, diagonals)
+    # all possible winning lines 
     winning_lines = [
         [0,1,2], [3,4,5], [6,7,8],  # rows
         [0,3,6], [1,4,7], [2,5,8],  # columns
         [0,4,8], [2,4,6]]            # diagonals
 
-    # check each winning line using basic comparisons
+    # check each winning line using comparisons
     for line in winning_lines:
         a = line[0]
         b = line[1]
@@ -256,7 +256,6 @@ def game_events(x,y):
         hit = hitbox_turtle_click_change(x, y)
         if hit is not None:
             print(f"Hitbox clicked: index {hit}, row {hit//3}, col {hit%3}")
-            # after a successful move, check for a winner or full board
     check_three_in_a_row()
         
 #triggers all functions
