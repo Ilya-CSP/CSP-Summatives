@@ -64,7 +64,6 @@ for _ in range(9):
     t.shapesize(10)
     t.penup()
     t.speed("fastest")
-    # initialize claim/owner attributes
     t.claimed = False
     t.owner = None
     squares.append(t)
@@ -201,14 +200,13 @@ def clear_board():
         t.owner = None
     game_going = False
     board_drawing = True
-    # reset turn to player 0
+    # reset turn to player 1
     current_turn = 0
-    # redraw the board immediately
+    # redraw the board
     game_board()
 
 def check_three_in_a_row():
     global score1, score2
-    # gather owners in a simple list
     owners = []
     for t in squares:
         owners.append(t.owner)
@@ -246,12 +244,12 @@ def check_three_in_a_row():
 
 #all functions executed from here
 def game_events(x,y):
-    # remember whether the board was already being drawn before this click
+    # remember whether the board was already drawn before this click
     was_board_drawing = board_drawing
 
     play_click(x,y)
     game_board()
-    # check hitboxes only if the board was already active before this click
+    # check hitboxes only if the board was is ready before this click
     if was_board_drawing:
         hit = hitbox_turtle_click_change(x, y)
         if hit is not None:
