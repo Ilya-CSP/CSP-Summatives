@@ -106,6 +106,7 @@ words_list5 =["APPLE","CHAIR","BREAD","PLANT","LIGHT","HEART","SMILE","TRUCK","T
 words_list6 = ["ANIMAL","BANANA","FLOWER","SCHOOL","FRIEND","PLANET","FOREST","FAMILY","ORANGE","RABBIT","SUMMER"]
 
 game_board = trtl.Turtle()
+game_board.hideturtle()
 game_board.speed("fastest")
 game_board.penup()
 
