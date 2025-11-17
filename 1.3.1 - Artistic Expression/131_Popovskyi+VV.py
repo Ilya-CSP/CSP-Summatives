@@ -134,8 +134,8 @@ if 7 <= age <=9:
 vy = 250
 vy2 = -250
 vx =-200-25*n
-#####DONE
-def columns():
+# much easier to draw columns while writing the letter/word
+'''def columns():
     global game_board, hx, hy, n, vx, vy, vy2
     for i in range(7):
         game_board.goto(hx,hy)
@@ -149,7 +149,7 @@ def columns():
         game_board.pendown()
         game_board.goto(vx,vy2)
         game_board.penup()
-        vx=vx+100
+        vx=vx+100'''
 
 #determine word
 if age <=6:
@@ -171,7 +171,7 @@ def game_start():
     rows = 6
     word = word.upper()
     word_len = len(word)
-    cell_size = 60
+    cell_size = 85
     start_x = - (word_len * cell_size) / 2 + cell_size / 2
     start_y = 180
 
@@ -258,7 +258,7 @@ def game_start():
 def onclick_playbutton(x,y):
     wn.clear()
     print(x,y)
-    columns()
+    #columns()
     game_start()
 def onclick_closebutton(x,y):
     print(x,y)
