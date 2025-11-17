@@ -165,16 +165,101 @@ elif 10 <= age:
 trtl_writer = trtl.Turtle()
 trtl_writer.hideturtle()
 
-
 def game_start():
-    
+    global word, trtl_writer, wn
+
+    rows = 6
+    word = word.upper()
+    word_len = len(word)
+    cell_size = 60
+    start_x = - (word_len * cell_size) / 2 + cell_size / 2
+    start_y = 180
+
+    painter = trtl.Turtle()
+    painter.hideturtle()
+    painter.speed("fastest")
+    painter.penup()
+
+    writer = trtl.Turtle()
+    writer.hideturtle()
+    writer.speed("fastest")
+    writer.penup()
+    writer.color("black")
+
+    def draw_cell(cx, cy, fill):
+        painter.goto(cx - cell_size / 2, cy - cell_size / 2)
+        painter.pendown()
+        painter.fillcolor(fill)
+        painter.begin_fill()
+        for i in range(4):
+            painter.forward(cell_size)
+            painter.left(90)
+        painter.end_fill()
+        painter.penup()
+
+    def write_letter(cx, cy, ch):
+        writer.goto(cx, cy - 12)
+        writer.write(ch, align="center", font=("Arial", 24, "bold"))
+
+
+    for row in range(rows):
+
+        guess = wn.textinput(f"Guess {row+1}/{rows}", f"Enter a {word_len}-letter guess: ")
+        if guess is None:
+
+            trtl.bye()
+            return
+        guess = guess.upper()
+
+        while len(guess) != word_len:
+            guess = wn.textinput("Invalid length", f"Guess must be {word_len} letters. Try again:")
+            if guess is None:
+                trtl.bye()
+                return
+            guess = guess.strip().upper()
+
+
+        result_colors = ["#9aa0a6"] * word_len  
+        target_counts = {}
+        for ch in word:
+            target_counts[ch] = target_counts.get(ch, 0) + 1
+
+        #green guesses
+        for i, ch in enumerate(guess):
+            if i < len(word) and ch == word[i]:
+                result_colors[i] = "#6aaa64"  
+                target_counts[ch] -= 1
+
+        # yellow guesses yellows
+        for i, ch in enumerate(guess):
+            if result_colors[i] == "#6aaa64":
+                continue
+            if target_counts.get(ch, 0) > 0:
+                result_colors[i] = "#c9b458"  
+                target_counts[ch] -= 1
+
+
+        cy = start_y - row * (cell_size + 10)
+        for i, ch in enumerate(guess):
+            cx = start_x + i * cell_size
+            draw_cell(cx, cy, result_colors[i])
+            write_letter(cx, cy, ch)
+
+        # check win
+        if guess == word:
+            wn.textinput("You win!", f"Correct! The word was {word}. Press OK to finish.")
+            return
+
+    # if out of guesses
+    wn.textinput("Game Over", f"Out of guesses. The word was {word}. Restart the program if you wanna play again.")
+
 
 
 def onclick_playbutton(x,y):
     wn.clear()
     print(x,y)
     columns()
-
+    game_start()
 def onclick_closebutton(x,y):
     print(x,y)
     trtl.bye()
