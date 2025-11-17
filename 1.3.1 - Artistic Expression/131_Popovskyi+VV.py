@@ -232,7 +232,7 @@ def game_start():
                 target_counts[ch] -= 1
 
         # yellow guesses yellows
-        for i, ch in enumerate(guess):
+        for i, ch in enumerate(guess): #enumarate checks the length (letters) of a word and converts it to an integer to loop
             if result_colors[i] == "#6aaa64":
                 continue
             if target_counts.get(ch, 0) > 0:
